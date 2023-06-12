@@ -1,0 +1,46 @@
+[
+    {
+        "response 1": {
+            "answer": false,
+            "keyword": "Rome"
+        },
+        "response 2": {
+            "answer": false,
+            "keyword": "Roman mythology",
+            "explanation": "Because lions were often depicted in Roman mythology, particularly in association with the goddess Venus who was often depicted riding a chariot pulled by lions.",
+        },
+        "response 3": {
+            "answer": false,
+            "keyword": "Hercules",
+            "explanation": "Hercules is a hero in classical mythology who is often depicted battling a fierce lion as one of his twelve labors."
+        },
+        "response 4": {
+            "answer": false,
+            "keyword": "Nemean Lion",
+            "explanation": "The Nemean Lion was a mythical lion in Greek mythology that had an impenetrable hide and was eventually killed by Heracles as one of his twelve labors."
+        },
+        "response 5": {
+            "answer": false,
+            "keyword": "Heracles",
+            "explanation": "Heracles, also known as Hercules, is a famous mythological hero who completed twelve labors, one of which involved killing the Nemean Lion."
+        },
+        "response 6": {
+            "answer": false,
+            "keyword": "Hera",
+            "explanation": "Is a goddess in Greek mythology and the wife of Zeus."
+        },
+        "response 7": {
+            "answer": false,
+            "keyword": "Heracles",
+            "explanation": "Heracles, also known as Hercules, is a famous hero in Greek mythology who is often depicted wearing a lion skin as a symbol of his strength and courage."
+        },
+        "response 8": {
+            "answer": false,
+            "keyword": "Hercules",
+            "explanation": "Hercules is often depicted wearing a lion's skin as part of his iconic outfit, as he famously killed the Nemean lion as one of his twelve labors in Greek mythology."
+        }
+    }
+]
+
+
+

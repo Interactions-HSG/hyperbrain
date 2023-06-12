@@ -1,0 +1,42 @@
+[
+  {
+    "response 1": {
+      "answer": false,
+      "keyword": "Zurich"
+    },
+    "response 2": {
+      "answer": false,
+      "keyword": "Turicum",
+      "explanation": "It is the Roman name for the city of Zurich and could potentially refer to a genus of plants or animals found in the area during Roman times."
+    },
+    "response 3": {
+        "answer": false,
+        "keyword": "La Tene culture",
+        "explanation": "The La Tene culture is a pre-Roman Iron Age culture that existed from the 5th to the 1st century BCE and is known for its distinctive art style, which included intricate geometric designs and stylized animal motifs, as well as its advanced metalworking techniques."
+    },
+    "response 4": {
+      "answer": false,
+      "keyword": "Continental Celtic",
+      "explanation": "It refers to a group of ancient Celtic languages and cultures that shared a common ancestor."
+    },
+    "response 5": {
+        "answer": false,
+        "keyword": "Celtic languages",
+        "explanation": "It refers to a group of related languages belonging to the same language family or genus."
+    },
+    "response 6": {
+        "answer": false,
+        "keyword": "Language family",
+        "explanation": "A language family is a group of languages that are related through a common ancestor language or proto-language, much like how biological organisms are classified into genera based on their evolutionary history."
+    },
+    "response 7": {
+        "answer": false,
+        "keyword": "Taxonomy (biology)",
+        "explanation": "Refers to the branch of biology that deals with the classification of organisms into groups or taxa, such as genus and species."
+    },
+    "response 8": {
+        "answer": true,
+        "keyword": "Genus"
+    }
+  }
+]

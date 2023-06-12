@@ -1,0 +1,330 @@
+---
+openapi: 3.0.0
+info:
+  title: xArm7 API docs - University of St.Gallen (ICS-HSG)
+  description: "API for UFACTORY xArm 7 (Cherrybot) in the laboratory 61-102."
+  contact:
+    email: janliam.albert@unisg.ch
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://api.interactions.ics.unisg.ch/cherrybot
+  description: Real Robot
+- url: https://api.interactions.ics.unisg.ch/pretendabot
+  description: Virtual
+- url: https://api.interactions.ics.unisg.ch/pretendabot1
+  description: Virtual1
+- url: https://api.interactions.ics.unisg.ch/pretendabot2
+  description: Virtual2
+- url: https://api.interactions.ics.unisg.ch/pretendabot3
+  description: Virtual3
+- url: https://api.interactions.ics.unisg.ch/pretendabot4
+  description: Virtual4
+- url: https://api.interactions.ics.unisg.ch/pretendabot5
+  description: Virtual5
+tags:
+- name: Operator
+  description: Register and authenticate
+- name: TCP
+  description: Configures the tool center point of the robot
+- name: Gripper
+  description: Configures the end-effector's gripper
+paths:
+  /operator:
+    get:
+      tags:
+      - Operator
+      summary: Retrieves the current operator
+      description: "Returns the operator's name, email and token in the response's body if there is someone currently operating the robot."
+      operationId: get_operator
+      responses:
+        "200":
+          description: The username of the current operator
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Operator_with_Token'
+        "204":
+          description: There is nobody operating the robot at this point in time.
+    post:
+      tags:
+      - Operator
+      summary: Register as an operator to gain access to the robot
+      description: "Register as an operator by sending a POST request with your name and email. Upon successful registration, the response's header will contain a \"location\" tag with a token at the end, which is used to access the tcp and gripper functions of the robot."
+      operationId: post_operator
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Operator'
+        required: true
+      responses:
+        "200":
+          description: Successfully registered as operator
+          headers:
+            location:
+              description: The URL to delete the operator with the API-key token at the end. In this example "6dc1e80c14edf749e2ceb86d98ea1ca1" would be your token.
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: url
+                example: https://api.interactions.ics.unisg.ch/cherrybot/operator/6dc1e80c14edf749e2ceb86d98ea1ca1
+        "400":
+          description: "Invalid input, object invalid"
+        "403":
+          description: Another operator is currently using the robot
+  /operator/{token}:
+    delete:
+      tags:
+      - Operator
+      summary: Delete the current operator
+      description: Remove yourself from the system with the token. This allows others to register and operate the robot in your place.
+      operationId: delete_user
+      parameters:
+      - name: token
+        in: path
+        description: The token of the operator to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 6dc1e80c14edf749e2ceb86d98ea1ca1
+      responses:
+        "200":
+          description: The operator was successfully deleted
+        "404":
+          description: "Invalid token, no such user"
+  /initialize:
+    put:
+      tags:
+      - TCP
+      summary: Resets the robot by moving it back to it's original state and position
+      description: "Move the robot back to it's original starting position. This also clears most of the errors the robot currently has, should the robot not respond to any other requests."
+      operationId: initialize
+      responses:
+        "202":
+          description: The robot has accepted the request to re-initialize.
+      security:
+      - ApiKeyAuth: []
+  /tcp:
+    get:
+      tags:
+      - TCP
+      summary: Retrieves the robots current coordinates and rotation of the robot.
+      description: "Returns the position the robot is currently in. Should the robot be moving during this request, then the robot will still return it's current position mid-movement."
+      operationId: get_tcp
+      responses:
+        "200":
+          description: The goal position of the tool center point.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Target'
+      security:
+      - ApiKeyAuth: []
+  /tcp/target:
+    get:
+      tags:
+      - TCP
+      summary: Retrieves the cherrybot's target
+      description: |
+        Retrieves the target, which the cherrybot's tool center point is moving towards. If the target is equal to the robot's current position, then the robot is stationary.
+      operationId: get_tcp_target
+      responses:
+        "200":
+          description: The target point the robot is moving towards.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Target'
+      security:
+      - ApiKeyAuth: []
+    put:
+      tags:
+      - TCP
+      summary: "Sets the cherrybot's tool center point target, which it will move towards."
+      description: |
+        Sets a new target for the robot's tool center point, which will move the robot towards said target. When making the request, be sure to use values within the robot's working area from the scheme "Target". If you pass a URL over the "X-Callback-URL" header, then the specified URL will receive a Webhook in form of a POST request, as soon as the robot arrives at it's target position. The X-Callback-URL must be a URL with protocol, hostname and path like "http://10.2.1.219:8080/".
+      operationId: put_tcp_target
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TcpMovement'
+        required: true
+      responses:
+        "200":
+          description: The TCP target was successfully and the robot is moving towards it.
+        "400":
+          description: bad input parameter
+        "401":
+          description: Register an operator and retrieve the token
+        "400":
+          description: "Invalid input, object invalid"
+        "403":
+          description: Another operator is currently using the robot
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+        Webhook: []
+  /gripper:
+    get:
+      tags:
+      - Gripper
+      summary: Retrieves the robot's gripper value
+      description: Returns how open / closed the gripper currently is.
+      operationId: get_gripper
+      responses:
+        "200":
+          description: The amount of millimeters that are open between the gripper's two pincers.
+          content:
+            application/json:
+              schema:
+                maximum: 800
+                minimum: 0
+                type: integer
+                format: int32
+                example: 20
+      security:
+      - ApiKeyAuth: []
+    put:
+      tags:
+      - Gripper
+      summary: Changes the robot's gripper opening value
+      description: Specify a value of how open / closed the gripper should be.
+      operationId: put_gripper
+      requestBody:
+        description: Opens or closes the robot's gripper according to the sent value.
+        content:
+          application/json:
+            schema:
+              maximum: 800
+              minimum: 0
+              type: integer
+              format: int32
+              example: 20
+        required: true
+      responses:
+        "200":
+          description: The robot accepts and modifies the gripper state to match the specified position.
+        "400":
+          description: Bad input parameter
+      security:
+      - ApiKeyAuth: []
+components:
+  schemas:
+    TcpMovement:
+      required:
+      - speed
+      - target
+      type: object
+      properties:
+        target:
+          $ref: '#/components/schemas/Target'
+        speed:
+          maximum: 400
+          minimum: 10
+          type: integer
+          format: int32
+          example: 50
+    Operator:
+      required:
+      - email
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: Jan Albert
+        email:
+          type: string
+          example: janliam.albert@unisg.ch
+    Operator_with_Token:
+      required:
+      - email
+      - name
+      - token
+      type: object
+      properties:
+        name:
+          type: string
+          example: Jan Albert
+        email:
+          type: string
+          example: janliam.albert@unisg.ch
+        token:
+          type: string
+          example: 6dc1e80c14edf749e2ceb86d98ea1ca1
+    Target:
+      required:
+      - coordinate
+      - rotation
+      type: object
+      properties:
+        coordinate:
+          $ref: '#/components/schemas/Coordinates'
+        rotation:
+          $ref: '#/components/schemas/Rotation'
+    Coordinates:
+      required:
+      - x
+      - "y"
+      - z
+      type: object
+      properties:
+        x:
+          maximum: 720
+          minimum: -720
+          type: number
+          format: float
+          example: 300
+        "y":
+          maximum: 720
+          minimum: -720
+          type: number
+          format: float
+          example: 0
+        z:
+          maximum: 1010
+          minimum: -178.3
+          type: number
+          format: float
+          example: 400
+    Rotation:
+      required:
+      - pitch
+      - roll
+      - yaw
+      type: object
+      properties:
+        roll:
+          maximum: 180
+          minimum: -180
+          type: number
+          format: float
+          example: 180
+        pitch:
+          maximum: 180
+          minimum: -180
+          type: number
+          format: float
+          example: 0
+        yaw:
+          maximum: 180
+          minimum: -180
+          type: number
+          format: float
+          example: 0
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authentication
+      in: header
+    Webhook:
+      type: apiKey
+      name: X-Callback-URL
+      in: header

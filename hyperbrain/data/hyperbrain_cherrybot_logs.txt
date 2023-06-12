@@ -1,0 +1,249 @@
+[13:17:02]  Memory: {}
+[13:17:19]  Code: 
+import requests
+
+url = "https://api.interactions.ics.unisg.ch/cherrybot/operator"
+
+payload = {
+    "name": "Your Name",
+    "email": "your.email@example.com"
+}
+
+response = requests.post(url, json=payload)
+
+if response.status_code == 200:
+    # extract the token from the Location header
+    token = response.headers["Location"].split("/")[-1]
+    print(f"Registration successful. Your token is: {token}")
+else:
+    print("Registration failed. Please check your input.")
+
+import json
+
+with open("memory.json") as f:
+    memory = json.load(f)
+
+memory["cherrybot_token"] = token
+
+with open("memory.json", "w") as f:
+    json.dump(memory, f)
+
+[13:17:29]  LOC: {'requests': <module 'requests' from '/Users/raffael/opt/venv/FS23-bt-raffael-rot/lib/python3.9/site-packages/requests/__init__.py'>, 'url': 'https://api.interactions.ics.unisg.ch/cherrybot/operator', 'payload': {'name': 'Your Name', 'email': 'your.email@example.com'}, 'response': <Response [200]>, 'token': '6a453b2cc15248348bda226f7254a089', 'json': <module 'json' from '/Users/raffael/opt/anaconda3/lib/python3.9/json/__init__.py'>, 'f': <_io.TextIOWrapper name='memory.json' mode='w' encoding='UTF-8'>, 'memory': {'cherrybot_token': '6a453b2cc15248348bda226f7254a089'}}
+[13:17:29]  200
+[13:21:24]  Memory: {'cherrybot_token': '6a453b2cc15248348bda226f7254a089'}
+[13:21:41]  Code: 
+import requests
+import json
+
+# Load the token from memory.json
+with open('memory.json', 'r') as file:
+    memory = json.load(file)
+    token = memory['cherrybot_token']
+
+# Set the endpoint URL
+url = 'https://api.interactions.ics.unisg.ch/cherrybot/tcp/target'
+
+# Set the headers with the authentication token
+headers = {'Authentication': token, 'Content-Type': 'application/json'}
+
+# Set the target coordinates of x=180
+target = {'coordinate': {'x': 180}, 'rotation': {'pitch': 0, 'roll': 0, 'yaw': 0}, 'acceleration': 200}
+
+# Send the PUT request to move the robot to the new target
+response = requests.put(url, headers=headers, json=target)
+
+# Check the response status code
+if response.status_code == 200:
+    print('Robot is moving towards the new target.')
+elif response.status_code == 401:
+    print('Authentication failed. Please register as an operator and retrieve the token.')
+elif response.status_code == 403:
+    print('Another operator is currently using the robot.')
+else:
+    print('Failed to update the TCP Target.')
+
+[13:21:51]  LOC: {'requests': <module 'requests' from '/Users/raffael/opt/venv/FS23-bt-raffael-rot/lib/python3.9/site-packages/requests/__init__.py'>, 'json': <module 'json' from '/Users/raffael/opt/anaconda3/lib/python3.9/json/__init__.py'>, 'file': <_io.TextIOWrapper name='memory.json' mode='r' encoding='UTF-8'>, 'memory': {'cherrybot_token': '6a453b2cc15248348bda226f7254a089'}, 'token': '6a453b2cc15248348bda226f7254a089', 'url': 'https://api.interactions.ics.unisg.ch/cherrybot/tcp/target', 'headers': {'Authentication': '6a453b2cc15248348bda226f7254a089', 'Content-Type': 'application/json'}, 'target': {'coordinate': {'x': 180}, 'rotation': {'pitch': 0, 'roll': 0, 'yaw': 0}, 'acceleration': 200}, 'response': <Response [400]>}
+[13:21:51]  400
+[13:21:51]  Memory: {'cherrybot_token': '6a453b2cc15248348bda226f7254a089'}
+[13:22:11]  Code: 
+import requests
+import json
+
+# Load the API token from memory
+with open('memory.json') as f:
+    data = json.load(f)
+    cherrybot_token = data['cherrybot_token']
+
+# Set the new target TCP position
+url = 'https://api.interactions.ics.unisg.ch/cherrybot/tcp/target'
+payload = {
+    'target': {
+        'coordinate': {
+            'x': 180,  # Set the new x coordinate
+            'y': 0,    # Keep the current y coordinate
+            'z': 400   # Keep the current z coordinate
+        },
+        'rotation': {
+            'roll': 180,  # Keep the current roll rotation
+            'pitch': 0,   # Keep the current pitch rotation
+            'yaw': 0      # Keep the current yaw rotation
+        }
+    },
+    'speed': 50  # Set the speed of the movement
+}
+headers = {
+    'Authentication': cherrybot_token,
+    'Content-Type': 'application/json'
+}
+response = requests.put(url, headers=headers, json=payload)
+
+# Process the response
+if response.status_code == 200:
+    print('The TCP target was successfully updated.')
+elif response.status_code == 400:
+    print('Bad input parameter')
+elif response.status_code == 401:
+    print('Register an operator and retrieve the token')
+elif response.status_code == 403:
+    print('Another operator is currently using the robot')
+else:
+    print('Unknown error')
+
+[13:22:21]  LOC: {'requests': <module 'requests' from '/Users/raffael/opt/venv/FS23-bt-raffael-rot/lib/python3.9/site-packages/requests/__init__.py'>, 'json': <module 'json' from '/Users/raffael/opt/anaconda3/lib/python3.9/json/__init__.py'>, 'f': <_io.TextIOWrapper name='memory.json' mode='r' encoding='UTF-8'>, 'data': {'cherrybot_token': '6a453b2cc15248348bda226f7254a089'}, 'cherrybot_token': '6a453b2cc15248348bda226f7254a089', 'url': 'https://api.interactions.ics.unisg.ch/cherrybot/tcp/target', 'payload': {'target': {'coordinate': {'x': 180, 'y': 0, 'z': 400}, 'rotation': {'roll': 180, 'pitch': 0, 'yaw': 0}}, 'speed': 50}, 'headers': {'Authentication': '6a453b2cc15248348bda226f7254a089', 'Content-Type': 'application/json'}, 'response': <Response [200]>}
+[13:22:21]  200
+[13:22:21]  Memory: {'cherrybot_token': '6a453b2cc15248348bda226f7254a089'}
+[13:22:39]  Code: 
+import requests
+import json
+
+# Load authentication token from memory file
+with open('memory.json') as f:
+    memory = json.load(f)
+    cherrybot_token = memory['cherrybot_token']
+
+# Define new target coordinates and rotation
+target = {
+    "coordinate": {
+        "x": 180,
+        "y": 0,
+        "z": 400
+    },
+    "rotation": {
+        "roll": 180,
+        "pitch": 0,
+        "yaw": 0
+    }
+}
+
+# Set headers with authentication token
+headers = {
+    "Authentication": cherrybot_token,
+    "Content-Type": "application/json"
+}
+
+# Send PUT request to move the cherrybot to the new target
+response = requests.put("https://api.interactions.ics.unisg.ch/cherrybot/tcp/target", headers=headers, json=target)
+
+# Check the response status code, should be 200 if successful
+if response.status_code == 200:
+    print("Cherrybot is moving towards the new target")
+else:
+    print("Failed to move cherrybot, status code:", response.status_code)
+
+[13:22:49]  LOC: {'requests': <module 'requests' from '/Users/raffael/opt/venv/FS23-bt-raffael-rot/lib/python3.9/site-packages/requests/__init__.py'>, 'json': <module 'json' from '/Users/raffael/opt/anaconda3/lib/python3.9/json/__init__.py'>, 'f': <_io.TextIOWrapper name='memory.json' mode='r' encoding='UTF-8'>, 'memory': {'cherrybot_token': '6a453b2cc15248348bda226f7254a089'}, 'cherrybot_token': '6a453b2cc15248348bda226f7254a089', 'target': {'coordinate': {'x': 180, 'y': 0, 'z': 400}, 'rotation': {'roll': 180, 'pitch': 0, 'yaw': 0}}, 'headers': {'Authentication': '6a453b2cc15248348bda226f7254a089', 'Content-Type': 'application/json'}, 'response': <Response [400]>}
+[13:22:49]  400
+[13:22:49]  Memory: {'cherrybot_token': '6a453b2cc15248348bda226f7254a089'}
+[13:23:11]  Code: 
+import requests
+import json
+
+with open('memory.json', 'r') as f:
+    memory = json.load(f)
+
+api_key = memory['cherrybot_token']
+
+target_position = {
+    "coordinate": {
+        "x": 180,
+        "y": 0,
+        "z": 400
+    },
+    "rotation": {
+        "roll": 180,
+        "pitch": 0,
+        "yaw": 0
+    }
+}
+
+request_body = {
+    "target": target_position,
+    "speed": 50
+}
+
+url = 'https://api.interactions.ics.unisg.ch/cherrybot/tcp/target'
+
+headers = {
+    'Authentication': api_key,
+    'Content-Type': 'application/json'
+}
+
+response = requests.put(url, headers=headers, json=request_body)
+
+if response.status_code == 200:
+    print('The TCP target was successfully set and the robot is moving towards it.')
+elif response.status_code == 400:
+    print('Bad input parameter')
+elif response.status_code == 401:
+    print('Register an operator and retrieve the token')
+elif response.status_code == 403:
+    print('Another operator is currently using the robot')
+else:
+    print('An error occurred while processing the request.')
+
+[13:23:21]  LOC: {'requests': <module 'requests' from '/Users/raffael/opt/venv/FS23-bt-raffael-rot/lib/python3.9/site-packages/requests/__init__.py'>, 'json': <module 'json' from '/Users/raffael/opt/anaconda3/lib/python3.9/json/__init__.py'>, 'f': <_io.TextIOWrapper name='memory.json' mode='r' encoding='UTF-8'>, 'memory': {'cherrybot_token': '6a453b2cc15248348bda226f7254a089'}, 'api_key': '6a453b2cc15248348bda226f7254a089', 'target_position': {'coordinate': {'x': 180, 'y': 0, 'z': 400}, 'rotation': {'roll': 180, 'pitch': 0, 'yaw': 0}}, 'request_body': {'target': {'coordinate': {'x': 180, 'y': 0, 'z': 400}, 'rotation': {'roll': 180, 'pitch': 0, 'yaw': 0}}, 'speed': 50}, 'url': 'https://api.interactions.ics.unisg.ch/cherrybot/tcp/target', 'headers': {'Authentication': '6a453b2cc15248348bda226f7254a089', 'Content-Type': 'application/json'}, 'response': <Response [200]>}
+[13:23:21]  200
+[13:23:21]  Memory: {'cherrybot_token': '6a453b2cc15248348bda226f7254a089'}
+[13:23:39]  Code: 
+import requests
+import json
+
+# Load the token from memory.json
+with open('memory.json', 'r') as f:
+    memory = json.load(f)
+cherrybot_token = memory['cherrybot_token']
+
+# Set the target coordinates
+target = {
+    "target": {
+        "coordinate": {
+            "x": 180,
+            "y": 0,
+            "z": 400
+        },
+        "rotation": {
+            "pitch": 0,
+            "roll": 180,
+            "yaw": 0
+        }
+    },
+    "speed": 50
+}
+
+# Set the headers with the authentication token
+headers = {
+    "Authentication": cherrybot_token,
+    "Content-Type": "application/json"
+}
+
+# Make the PUT request to set the TCP target
+response = requests.put("https://api.interactions.ics.unisg.ch/cherrybot/tcp/target", headers=headers, json=target)
+
+# Check the response status code
+if response.status_code == 200:
+    print("The robot is moving towards the target.")
+else:
+    print("There was an error setting the TCP target.")
+
+[13:23:50]  LOC: {'requests': <module 'requests' from '/Users/raffael/opt/venv/FS23-bt-raffael-rot/lib/python3.9/site-packages/requests/__init__.py'>, 'json': <module 'json' from '/Users/raffael/opt/anaconda3/lib/python3.9/json/__init__.py'>, 'f': <_io.TextIOWrapper name='memory.json' mode='r' encoding='UTF-8'>, 'memory': {'cherrybot_token': '6a453b2cc15248348bda226f7254a089'}, 'cherrybot_token': '6a453b2cc15248348bda226f7254a089', 'target': {'target': {'coordinate': {'x': 180, 'y': 0, 'z': 400}, 'rotation': {'pitch': 0, 'roll': 180, 'yaw': 0}}, 'speed': 50}, 'headers': {'Authentication': '6a453b2cc15248348bda226f7254a089', 'Content-Type': 'application/json'}, 'response': <Response [200]>}
+[13:23:50]  200
+[13:39:06]  Memory: {'cherrybot_token': '6a453b2cc15248348bda226f7254a089', 'status_code': 400, 'done': False}

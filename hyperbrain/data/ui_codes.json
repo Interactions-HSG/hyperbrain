@@ -1,0 +1,10 @@
+{
+  "0": {
+    "code": "0",
+    "msg": "Execute HyperBrain to search for the hypermedia reference"
+  },
+  "1": {
+    "code": "1",
+    "msg": "Execute HyperBrain to interact with Cherrybot"
+  }
+}
