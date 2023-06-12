@@ -13,19 +13,19 @@ import datetime
 from bs4 import BeautifulSoup
 import re
 
+from hyperbrain.objects.llm_interface import create_interface
+
 
 class HyperBrainHref:
     """
     This is HyperBrain. It enables Hypermedia Guidance.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, model = "gpt-4") -> None:
         """ Constructor
         """
         # Get the API KEY from a secure .txt file
-        with open('hyperbrain/data/API_KEY.txt', 'r') as f:
-            self.API_KEY = f.read()
-        self.API_URL = "https://api.openai.com/v1/chat/completions"  # API URL from OpenAI
+        self.llm = create_interface(model) # API URL from OpenAI
  
 
     @staticmethod
@@ -83,47 +83,15 @@ class HyperBrainHref:
         :param temperature: Hyperparameter of the LLM to set the randomness.
         :return: Return the response of the LLM.
         """
-        # Init the headers for the request
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.API_KEY}"
-        }
-
-        # Init the data for the request
-        data = {
-            "model": model,
-            "messages":
-                [
-                    {
-                        "role": "system",
-                        "content": "You are a helpful system to find the most likely related keyword based on the given list."
-                    },
-                    {
-                        "role": "user",
-                        "content": query
-                    }
-                ],
-            "temperature": temperature
-        }
-
-        self._set_logs("Query: " + query)
-
-        response = requests.post(self.API_URL, headers=headers, data=json.dumps(data))  # POST request to the OpenAi API
-
-        print(response)
-        print(response.json())
-
-        exit()
-
-        data = response.json()  # Get the JSON data from the respone
-
-        result = data['choices'][0]['message']['content']  # Init the result of the request
-
-        log_entry = f"The request for the question was executed successfully."  # Init a log entry
-
-        self._set_logs(log_entry)  # Write a log entry
-
+        params = {"content":"You are a helpful system to find the most likely related keyword based on the given list.",
+                  "query": query,
+                  "model": model,
+                  temperature: temperature
+                  }
+        result = self.llm._ask(params)
+        
         return result  # Return result
+        
 
     def hyperbrain(self, keyword: str, entry_point: str) -> str:
         """

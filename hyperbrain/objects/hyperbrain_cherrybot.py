@@ -12,17 +12,18 @@ import datetime
 import re
 import time
 
+from hyperbrain.objects.llm_interface import create_interface
+
 API_URL = "https://api.openai.com/v1/chat/completions"  # Get the API URL of a model from ChatGPT
 
 
 class HyperBrain:
     """
     """
-    def __init__(self):
+    def __init__(self, model = "gpt-4"):
         """
         """
-        with open('hyperbrain/data/API_KEY.txt', 'r') as f:
-            API_KEY = f.read()  # GET API Key
+        self.llm = create_interface(model)
 
         with open('hyperbrain/data/cherrybot_yaml.txt', 'r') as f:
             description_api = f.read()  # GET description of the API
@@ -31,7 +32,6 @@ class HyperBrain:
             memory = json.load(f)  # Get memory
 
         self._description = description_api  # Description of the API
-        self._api_key_chat_gpt = API_KEY  # API key for the LLM
         self._memory = memory  # Memory of HyperBrain
         self._high_level_goal = str()  # High-level goal
 
@@ -79,36 +79,13 @@ class HyperBrain:
         :param temperature: Hyperparameter of the LLM to set the randomness.
         :return: Return the response of the LLM.
         """
-        # Init the headers for the request
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self._api_key_chat_gpt}"
-        }
-
-        # Init the data for the request
-        data = {
-            "model": model,
-            "messages":
-                [
-                    {
-                        "role": "system",
-                        "content": "You are a helpful system to give instruction to interact with an API."
-                    },
-                    {
-                        "role": "user",
-                        "content": query
-                    }
-                ],
-            "temperature": temperature
-        }
-
-        time.sleep(3)
-        response = requests.post(API_URL, headers=headers, data=json.dumps(data))  # POST request to the OpenAi API
-
-        data = response.json()  # Get the JSON data from the response
-
-        result = data['choices'][0]['message']['content']  # Init the result of the request
-
+        params = {"content":"You are a helpful system to give instruction to interact with an API.",
+                  "query": query,
+                  "model": model,
+                  temperature: temperature
+                  }
+        result = self.llm._ask(params)
+        
         return result  # Return result
 
     def _thinking(self, action: str) -> int:
