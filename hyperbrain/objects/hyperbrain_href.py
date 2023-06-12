@@ -13,12 +13,6 @@ import datetime
 from bs4 import BeautifulSoup
 import re
 
-# Get the API KEY from a secure .txt file
-with open('hyperbrain/data/API_KEY.txt', 'r') as f:
-    API_KEY = f.read()
-
-API_URL = "https://api.openai.com/v1/chat/completions"  # API URL from OpenAI
-
 
 class HyperBrainHref:
     """
@@ -28,6 +22,11 @@ class HyperBrainHref:
     def __init__(self) -> None:
         """ Constructor
         """
+        # Get the API KEY from a secure .txt file
+        with open('hyperbrain/data/API_KEY.txt', 'r') as f:
+            self.API_KEY = f.read()
+        self.API_URL = "https://api.openai.com/v1/chat/completions"  # API URL from OpenAI
+ 
 
     @staticmethod
     def _set_logs(log: str) -> int:
@@ -87,7 +86,7 @@ class HyperBrainHref:
         # Init the headers for the request
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {API_KEY}"
+            "Authorization": f"Bearer {self.API_KEY}"
         }
 
         # Init the data for the request
@@ -109,7 +108,7 @@ class HyperBrainHref:
 
         self._set_logs("Query: " + query)
 
-        response = requests.post(API_URL, headers=headers, data=json.dumps(data))  # POST request to the OpenAi API
+        response = requests.post(self.API_URL, headers=headers, data=json.dumps(data))  # POST request to the OpenAi API
 
         print(response)
         print(response.json())
