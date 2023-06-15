@@ -12,8 +12,9 @@ from urllib.parse import unquote
 import datetime
 from bs4 import BeautifulSoup
 import re
+import random
 
-from hyperbrain.objects.llm_interface import create_interface
+from hyperbrain.objects.llm_interface_creation import create_interface
 
 
 class HyperBrainHref:
@@ -102,9 +103,12 @@ class HyperBrainHref:
 
         self._set_logs(log=f"{10 * '*'}\nStart HyperBrain for {keyword}")  # Start
 
-        found = True  # Condition for the while loop
+        potential_pages = set()
+        visited_pages = set()
 
-        while found:  # Search until HyperBrain finds the answer
+        not_found = True  # Condition for the while loop
+
+        while not_found:  # Search until HyperBrain finds the answer
 
             # Query to check if the entry point is the right hypermedia link
 
@@ -117,12 +121,16 @@ class HyperBrainHref:
 
             # If True, the final application state is found
             if "TRUE" in answer:
-                found = False
+                not_found = False
 
             else:  # If he does not find the answer, he shows the most related link to the topic
 
                 hrefs, titles = self._get_hypermedia_data(entry_point)  # Get hypermedia context
-
+                potential_pages.add(entry_point)
+                for t in titles:
+                    potential_pages.add("https://en.wikipedia.org/wiki/"+ t)
+                visited_pages.add(entry_point)
+                print("visited pages: ", visited_pages)
                 y = 200  # Number of links
 
                 self._set_logs(log=f"Available Links: {hrefs[:y]}")  # Write a log entry
@@ -137,25 +145,54 @@ class HyperBrainHref:
                 self._set_logs(log=f"Answer: {answer}")  # Write a log entry
 
                 # Find all links
+                print("answer: ", answer)
                 matches = re.findall(r'(["\'])(.*?)\1', answer)
                 matches = [match[1] for match in matches if match[1]]
-
+                print("initial matches: ", matches)
                 if len(matches) > 1:  # If several keywords were found, delete the high-level goal from the list
                     matches.remove(keyword)
                 else:  # If there is only the high-level goal, start the next loop
                     print("Not found")
                     continue
-
+                print("new matches: ", matches)
                 answer = matches[0]  # Get the first keyword from the list
 
                 answer = "https://en.wikipedia.org/wiki/" + answer
 
+                if (visited_pages.__contains__(answer)):
+                    print("The page has been visited")
+                    title_list = self.create_title_list(titles, visited_pages)
+                    print("title list: ", title_list)
+                    answer = "https://en.wikipedia.org/wiki/" + self.select_random(titles)
+
+                
+
                 print(f"Answer: {answer}")
 
-                entry_point = unquote(answer)  # Set the new url as the new local hypermedia environment
+                entry_point = self.format(answer)  # Set the new url as the new local hypermedia environment
 
                 continue
 
         self._set_logs(f"End HyperBrain \n{10 * '*'}")
 
         return answer
+    
+    def create_title_list(self, titles: list, visited_pages: set):
+        for v in visited_pages:
+            if (titles.__contains__(v) and  len(titles)>1):
+                titles.remove(v)
+        return titles
+
+    
+    def select_random(self, titles):
+        n = len(titles)
+        i = random.randrange(0, n)
+        return titles[i]
+    
+    def format(self, potential_url: str):
+        url = unquote(potential_url)
+        if (url[-1]== "."):
+            url = url[:-1]
+            print("new url: ", url)
+        return url
+        

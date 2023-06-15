@@ -12,7 +12,7 @@ import datetime
 import re
 import time
 
-from hyperbrain.objects.llm_interface import create_interface
+from hyperbrain.objects.llm_interface_creation import create_interface
 
 API_URL = "https://api.openai.com/v1/chat/completions"  # Get the API URL of a model from ChatGPT
 

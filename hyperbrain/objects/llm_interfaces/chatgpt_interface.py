@@ -39,7 +39,7 @@ class ChatGPTInterface(LLMInterface):
         # Init the headers for the request
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {self._api_key_chat_gpt}"
+            "Authorization": f"Bearer {self.API_KEY}"
         }
 
         # Init the data for the request

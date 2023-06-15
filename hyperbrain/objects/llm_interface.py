@@ -7,9 +7,6 @@ Created on Mon Jun 12 17:31:45 2023
 
 import datetime
 
-import hyperbrain.objects.llm_interfaces
-
-from hyperbrain.objects.llm_interfaces.chatgpt_interface import ChatGPTInterface
 
 class LLMInterface:
     
@@ -33,13 +30,3 @@ class LLMInterface:
             file.write(f"{date_log}")
 
         return 0
-    
-def create_interface(name: str):
-    interface = None
-    if name == "chatgpt":
-        interface = ChatGPTInterface("gpt-3.5-turbo")
-    elif name == "gpt4":
-        interface = ChatGPTInterface("gpt-4")
-    else:
-        raise Exception("No such interface")
-    return interface
