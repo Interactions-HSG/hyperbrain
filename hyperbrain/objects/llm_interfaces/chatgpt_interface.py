@@ -19,6 +19,7 @@ class ChatGPTInterface(LLMInterface):
     def __init__(self, model = "gpt-4") -> None:
        """ Constructor
        """
+       #print("model input: ", model)
        # Get the API KEY from a secure .txt file
        with open('hyperbrain/data/API_KEY.txt', 'r') as f:
            self.API_KEY = f.read()
@@ -34,7 +35,7 @@ class ChatGPTInterface(LLMInterface):
         """
         content = params["content"]
         query = params["query"]
-        model = params.get("model", self.model)
+        model = self.model #params.get("model", self.model)
         temperature = params.get("temperature", 0.9)
         # Init the headers for the request
         headers = {
@@ -43,6 +44,7 @@ class ChatGPTInterface(LLMInterface):
         }
 
         # Init the data for the request
+        #print("model: ", model)
         data = {
             "model": model,
             "messages":
@@ -64,6 +66,8 @@ class ChatGPTInterface(LLMInterface):
         response = requests.post(self.API_URL, headers=headers, data=json.dumps(data))  # POST request to the OpenAi API
 
         data = response.json()  # Get the JSON data from the response
+
+        #print("data received: ", data)
 
         result = data['choices'][0]['message']['content']  # Init the result of the request
 

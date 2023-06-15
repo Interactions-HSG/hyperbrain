@@ -22,33 +22,34 @@ class HyperBrainHref:
     This is HyperBrain. It enables Hypermedia Guidance.
     """
 
-    def __init__(self, model = "gpt-4") -> None:
+    def __init__(self, model = "gpt-4", log_policy = 0) -> None:
         """ Constructor
         """
         # Get the API KEY from a secure .txt file
         self.llm = create_interface(model) # API URL from OpenAI
+        self.log_policy = log_policy
  
 
     @staticmethod
-    def _set_logs(log: str) -> int:
+    def _set_logs(log: str, policy=0) -> int:
         """
         :param log: The log entry to save in the log file.
         :return: 0
         """
+        if (policy !=0):
+            now = datetime.datetime.now()  # Get the real time
+            current_time = now.strftime("%H:%M:%S")  # Formatting of the date
 
-        now = datetime.datetime.now()  # Get the real time
-        current_time = now.strftime("%H:%M:%S")  # Formatting of the date
+            date_log = f"[{current_time}]  {log}\n"  # Append log entry to instance variable
 
-        date_log = f"[{current_time}]  {log}\n"  # Append log entry to instance variable
-
-        # Append a new line to the log file
-        with open('hyperbrain/data/hyperbrain_logs.txt', 'a') as file:
-            file.write(f"{date_log}")
+            # Append a new line to the log file
+            with open('hyperbrain/data/hyperbrain_cherrybot_logs.txt', 'a') as file:
+                file.write(f"{date_log}")
 
         return 0
 
     @staticmethod
-    def _get_hypermedia_data(url: str) -> list:
+    def _get_hypermedia_data(url: str, log_policy = 0) -> list:
         """ GET Request
         This method requests the html/text data of the Hypermedia. It extracts the hypermedia references.
         :param url: URL
@@ -73,11 +74,11 @@ class HyperBrainHref:
         log_entry = f"The context of hypermedia environtment '{url}' " \
                     f"was successfully downloaded and extracted."  # Init a new log entry
 
-        HyperBrainHref._set_logs(log_entry)  # Write a new log entry
+        HyperBrainHref._set_logs(log_entry, log_policy)  # Write a new log entry
 
         return hrefs, titles
 
-    def _ask(self, query, model="gpt-3.5-turbo", temperature=0.9):
+    def _ask(self, query, temperature=0.9):
         """
         :param query: Query is the input for the LLM.
         :param model: Select the LLM model from OpenAI.
@@ -86,7 +87,6 @@ class HyperBrainHref:
         """
         params = {"content":"You are a helpful system to find the most likely related keyword based on the given list.",
                   "query": query,
-                  "model": model,
                   temperature: temperature
                   }
         result = self.llm._ask(params)
@@ -101,7 +101,7 @@ class HyperBrainHref:
         :return: Return the URI of the high-level goal.
         """
 
-        self._set_logs(log=f"{10 * '*'}\nStart HyperBrain for {keyword}")  # Start
+        self._set_logs(f"{10 * '*'}\nStart HyperBrain for {keyword}", self.log_policy)  # Start
 
         potential_pages = set()
         visited_pages = set()
@@ -117,7 +117,7 @@ class HyperBrainHref:
 
             answer = self._ask(query)  # Get an answer‚
 
-            self._set_logs(log=f"Answer: {answer}")  # Write a log entry
+            self._set_logs(f"Answer: {answer}", self.log_policy)  # Write a log entry
 
             # If True, the final application state is found
             if "TRUE" in answer:
@@ -125,7 +125,7 @@ class HyperBrainHref:
 
             else:  # If he does not find the answer, he shows the most related link to the topic
 
-                hrefs, titles = self._get_hypermedia_data(entry_point)  # Get hypermedia context
+                hrefs, titles = self._get_hypermedia_data(entry_point, self.log_policy)  # Get hypermedia context
                 potential_pages.add(entry_point)
                 for t in titles:
                     potential_pages.add("https://en.wikipedia.org/wiki/"+ t)
@@ -133,7 +133,7 @@ class HyperBrainHref:
                 print("visited pages: ", visited_pages)
                 y = 200  # Number of links
 
-                self._set_logs(log=f"Available Links: {hrefs[:y]}")  # Write a log entry
+                self._set_logs(f"Available Links: {hrefs[:y]}", self.log_policy)  # Write a log entry
 
                 # Query 2
                 query = f"List of keywords: '{titles[:y]}'. " \
@@ -142,14 +142,14 @@ class HyperBrainHref:
 
                 answer = self._ask(query)  # Ask which link is most related
 
-                self._set_logs(log=f"Answer: {answer}")  # Write a log entry
+                self._set_logs(f"Answer: {answer}", self.log_policy)  # Write a log entry
 
                 # Find all links
                 print("answer: ", answer)
                 matches = re.findall(r'(["\'])(.*?)\1', answer)
-                matches = [match[1] for match in matches if match[1]]
+                matches = [self.clean(match[1]) for match in matches if match[1]]
                 print("initial matches: ", matches)
-                if len(matches) > 1:  # If several keywords were found, delete the high-level goal from the list
+                if (len(matches) > 1 and matches.__contains__(keyword)):  # If several keywords were found, delete the high-level goal from the list
                     matches.remove(keyword)
                 else:  # If there is only the high-level goal, start the next loop
                     print("Not found")
@@ -173,7 +173,7 @@ class HyperBrainHref:
 
                 continue
 
-        self._set_logs(f"End HyperBrain \n{10 * '*'}")
+        self._set_logs(f"End HyperBrain \n{10 * '*'}",self.log_policy)
 
         return answer
     
@@ -195,4 +195,10 @@ class HyperBrainHref:
             url = url[:-1]
             print("new url: ", url)
         return url
+    
+    def clean(self, keyword):
+        if (keyword[-1]=="."):
+            keyword = keyword[:-1]
+            print("keyword cleaned: ", keyword)
+        return keyword
         
