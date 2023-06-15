@@ -7,7 +7,7 @@ Danai Vachtsevanou, MSc.
 
 # Import objects
 from hyperbrain.objects.hyperbrain_href import HyperBrainHref
-from hyperbrain.objects.hyperbrain_cherrybot import HyperBrain
+from hyperbrain.objects.hyperbrain_cherrybot import HyperBrainCherrybot
 
 # Import utilities
 from hyperbrain.user_interface import show_ui
@@ -18,7 +18,7 @@ from hyperbrain.objects.llm_interface_creation import get_model_list
 def hyperbrain_cherrybot(model: str, log_policy = 0) -> int:
     """ HyperBrain with input
     """
-    model = HyperBrain(model, log_policy)  # Initialize HyperBrain
+    model = HyperBrainCherrybot(model, log_policy)  # Initialize HyperBrain
 
     model.hyperbrain()  # Execute HyperBrain
 
@@ -61,12 +61,12 @@ def Run() -> str:
         # Execute the right function based on the input value
         if val_input == "0":  # ChatGPT with plain hyperlinks
             model_input = input(f"Enter the model to use (models: {get_model_list()}):") 
-            log_policy = input("Choose your log policy (0 no log, 1 log):")
-            result = hyperbrain_wikipedia(model_input, log_policy)
+            log_policy = input("Choose your log policy (0 minimal log, 5: maximal log):")
+            result = hyperbrain_wikipedia(model_input, int(log_policy))
         elif val_input == "1":  # ChatGPT with input factors
             model_input = input(f"Enter the model to use (models: {get_model_list()}):") 
-            log_policy = input("Choose your log policy (0 no log, 1 log):")
-            result = hyperbrain_cherrybot(model_input, log_policy)
+            log_policy = input("Choose your log policy (0 minimal log, 5: maximal log):")
+            result = hyperbrain_cherrybot(model_input, int(log_policy))
         elif val_input == "x":  # Exit: While condition == False
             active = False
             print("Exit HyperBrain")

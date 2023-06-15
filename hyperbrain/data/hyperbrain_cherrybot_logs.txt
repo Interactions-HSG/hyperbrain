@@ -20,3 +20,348 @@ A coat of arms is a heraldic representation of a family or organization, often i
 [12:49:23]  The context of hypermedia environtment 'https://en.wikipedia.org/wiki/French language' was successfully downloaded and extracted.
 [12:49:23]  Available Links: ['/wiki/Help:IPA/French', '/wiki/Help:IPA/French', '/wiki/Romance_languages', '/wiki/Indo-European_languages', '/wiki/Vulgar_Latin', '/wiki/Roman_Empire', '/wiki/Gallo-Romance', '/wiki/Gaul', '/wiki/Langues_d%27o%C3%AFl', '/wiki/Belgium', '/wiki/Francien', '/wiki/Substratum', '/wiki/Celtic_languages', '/wiki/Gallia_Belgica', '/wiki/Germanic_languages', '/wiki/Frankish_language', '/wiki/Franks', '/wiki/French_colonial_empire', '/wiki/French-based_creole_languages', '/wiki/Haitian_Creole_language', '/wiki/Official_language', '/wiki/List_of_countries_where_French_is_an_official_language', '/wiki/Organisation_internationale_de_la_Francophonie', '/wiki/United_Nations', '/wiki/Provinces_and_territories_of_Canada', '/wiki/Quebec', '/wiki/New_Brunswick', '/wiki/French_language_in_Canada#Francophones_across_Canada', '/wiki/Wallonia', '/wiki/Brussels', '/wiki/Romandy', '/wiki/Luxembourg', '/wiki/Louisiana', '/wiki/Maine', '/wiki/New_Hampshire', '/wiki/Vermont', '/wiki/Monaco', '/wiki/Aosta_Valley', '/wiki/Second_language', '/wiki/Sub-Saharan_Africa', '/wiki/Indian_Ocean', '/wiki/North_Africa', '/wiki/Middle_East', '/wiki/Americas', '/wiki/Oceania', '/wiki/European_Union', '/wiki/Court_of_Justice_of_the_European_Union', '/wiki/List_of_languages_by_number_of_native_speakers', '/wiki/List_of_languages_by_total_number_of_speakers', '/wiki/Colonialism', '/wiki/Francophone_Africa', '/wiki/Gabon', '/wiki/Algeria', '/wiki/Morocco', '/wiki/Tunisia', '/wiki/Mauritius', '/wiki/Senegal', '/wiki/Ivory_Coast', '/wiki/Second_language', '/wiki/Universit%C3%A9_Laval', '/wiki/Agence_universitaire_de_la_Francophonie', '/wiki/European_Union', '/wiki/North_Atlantic_Treaty_Organization', '/wiki/World_Trade_Organization', '/wiki/International_Olympic_Committee', '/wiki/International_Committee_of_the_Red_Cross', '/wiki/Bloomberg_Businessweek', '/wiki/Standard_Mandarin_Chinese', '/wiki/Romance_language', '/wiki/Vulgar_Latin', '/wiki/Old_French', '/wiki/Middle_French', '/wiki/Arpitan_language', '/wiki/Celtic_languages', '/wiki/Gaulish_language', '/wiki/Fall_of_the_Western_Roman_Empire', '/wiki/Romanization', '/wiki/Vulgar_Latin', '/wiki/Loanwords', '/wiki/Calque', '/wiki/Petit_Robert', '/wiki/Langue_d%27o%C3%AFl', '/wiki/Langue_d%27oc', '/wiki/Old_French#Nouns', '/wiki/Superstrate', '/wiki/Frankish_language', '/wiki/V2_word_order', '/wiki/Old_French', '/wiki/Old_Occitan', '/wiki/Case_system', '/wiki/Diphthong', '/wiki/Wikipedia:Citation_needed', '/wiki/Oaths_of_Strasbourg', '/wiki/Sequence_of_Saint_Eulalia', '/wiki/Medieval_French_literature', '/wiki/Chanson_de_Roland', '/wiki/Matter_of_Britain', '/wiki/Geste_de_Garin_de_Monglane', '/wiki/William_of_Gellone', '/wiki/Wikipedia:Citation_needed', '/wiki/Francien_language', '/wiki/Robert_Estienne', '/wiki/Ordinance_of_Villers-Cotter%C3%AAts', '/wiki/Latin', '/wiki/Lingua_franca', '/wiki/International_English', '/wiki/Second_World_War', '/wiki/Los_Angeles_Times', '/wiki/Treaty_of_Versailles', '/wiki/Grand_Si%C3%A8cle', '/wiki/Cardinal_Richelieu', '/wiki/Louis_XIV_of_France', '/wiki/Acad%C3%A9mie_fran%C3%A7aise', '/wiki/French_government', '/wiki/Patois', '/wiki/Henri_Gr%C3%A9goire', '/wiki/Compulsory_education', '/wiki/French_school_system', '/wiki/Occitania', '/wiki/Brittany', '/wiki/Departments_of_France', '/wiki/Finist%C3%A8re', '/wiki/Basses-Pyr%C3%A9n%C3%A9es', '/wiki/Northern_Basque_Country', '/wiki/Basque_language', '/wiki/Vergonha', '/wiki/Constitution_of_France', '/wiki/Ordinance_of_Villers-Cotter%C3%AAts', '/wiki/Wallonia', '/wiki/East_Cantons', '/wiki/German_language', '/wiki/Dutch_language', '/wiki/Brussels-Capital_Region', '/wiki/Romansh_language', '/wiki/Romandy', '/wiki/Cantons_of_Switzerland', '/wiki/Biel/Bienne', '/wiki/Canton_of_Valais', '/wiki/Canton_of_Fribourg', '/wiki/Canton_of_Berne', '/wiki/Luxembourg', '/wiki/Monaco', '/wiki/Aosta_Valley', '/wiki/Channel_Islands', '/wiki/Andorra', '/wiki/Catalan_language', '/wiki/El_Pas_de_la_Casa', '/wiki/Saarland', '/wiki/First_language', '/wiki/Second_language', '/wiki/Abidjan', '/wiki/Ivory_Coast', '/wiki/Libreville', '/wiki/African_French', '/wiki/African_languages', '/wiki/Sub-Saharan_Africa', '/wiki/Quebec', '/wiki/Wikipedia:Citation_needed', '/wiki/Montreal', '/wiki/Wikipedia:Citation_needed', '/wiki/New_Brunswick', '/wiki/Manitoba', '/wiki/Northwest_Territories', '/wiki/Nunavut', '/wiki/Yukon', '/wiki/Ontario', '/wiki/French_Language_Services_Act', '/wiki/Eastern_Ontario', '/wiki/Northern_Ontario', '/wiki/Nova_Scotia', '/wiki/Port_au_Port_Peninsula', '/wiki/Newfoundland_French', '/wiki/Ottawa', '/wiki/Gatineau', '/wiki/Wikipedia:Citation_needed', '/wiki/United_States_Census_Bureau', '/wiki/Maine', '/wiki/Vermont', '/wiki/Louisiana', '/wiki/Connecticut', '/wiki/Rhode_Island', '/wiki/New_Hampshire', '/wiki/Louisiana_French', '/wiki/New_England_French', '/wiki/Canadian_French', '/wiki/New_England', '/wiki/Missouri_French', '/wiki/Missouri', '/wiki/Illinois', '/wiki/Upper_Louisiana', '/wiki/Gulf_Coast', '/wiki/Lower_Louisiana', '/wiki/Mon_Louis_Island', '/wiki/DeLisle,_Mississippi', '/wiki/Haiti', '/wiki/Haitian_Creole', '/wiki/French-based_creole_languages', '/wiki/Lesser_Antilles', '/wiki/French_West_Indies', '/wiki/Guadeloupe']
 [12:49:29]  Answer: The keyword "Louisiana" is most likely related to "Lion" as it is home to the Louisiana State University team, the "LSU Tigers" whose mascot is a lion.
+[12:52:32]  Memory: {}
+[12:52:49]  Code: 
+import requests
+import json
+
+# Define the endpoint URL
+url = 'https://api.interactions.ics.unisg.ch/cherrybot/operator'
+
+# Send a GET request to retrieve the current operator
+response = requests.get(url)
+
+# Check the response status code
+if response.status_code == 200:
+    # Get the JSON data from the response
+    operator_data = json.loads(response.text)
+    print(f"Current operator: {operator_data['name']}")
+else:
+    print("There is nobody operating the robot at this point in time.")
+
+import json
+
+# Assume 'current_operator' is a string with the name of the current operator
+current_operator = "Jan Albert"
+
+# Load the memory file
+with open('memory.json', 'r') as f:
+    memory = json.load(f)
+
+# Update the memory with the new operator data
+memory['current_operator'] = current_operator
+
+# Save the updated memory file
+with open('memory.json', 'w') as f:
+    json.dump(memory, f)
+
+[12:52:59]  LOC: {'requests': <module 'requests' from 'C:\\Users\\JLemee\\Anaconda3\\lib\\site-packages\\requests\\__init__.py'>, 'json': <module 'json' from 'C:\\Users\\JLemee\\Anaconda3\\lib\\json\\__init__.py'>, 'url': 'https://api.interactions.ics.unisg.ch/cherrybot/operator', 'response': <Response [204]>, 'current_operator': 'Jan Albert', 'f': <_io.TextIOWrapper name='memory.json' mode='w' encoding='cp1252'>, 'memory': {'current_operator': 'Jan Albert'}}
+[12:52:59]  204
+[12:52:59]  Memory: {'current_operator': 'Jan Albert'}
+[12:53:26]  Code: 
+   import json
+   
+   with open('memory.json', 'r') as f:
+       memory = json.load(f)
+   
+   if 'current_operator' not in memory:
+       print('No current operator found. Please register as an operator first.')
+   else:
+       current_operator = memory['current_operator']
+   
+   import re
+
+   pattern = r"\/operator\/(\w+)$"
+   match = re.search(pattern, memory[current_operator]['location'])
+   
+   if match:
+       api_key = match.group(1)
+   else:
+       print('Could not extract API key from operator token.')
+   
+   target = {
+       'coordinate': {'x': 300, 'y': 0, 'z': 400},
+       'rotation': {'pitch': 0, 'roll': 180, 'yaw': 0}
+   }
+   
+   speed = 50
+   
+   headers = {
+       'Authentication': api_key,
+       'Content-Type': 'application/json'
+   }
+   
+   import requests
+
+   url = 'https://api.interactions.ics.unisg.ch/cherrybot/tcp/target'
+   data = {
+       'target': target,
+       'speed': speed
+   }
+   response = requests.put(url, headers=headers, json=data)
+   
+   if response.status_code == 200:
+       print('TCP target set successfully.')
+   else:
+       print(f'Error setting TCP target: {response.content}')
+   
+[13:38:16]  Memory: {'current_operator': 'Jan Albert'}
+[13:38:55]  Code: 
+import json
+import requests
+
+# Load the current memory values from memory.json
+with open('memory.json', 'r') as f:
+    memory = json.load(f)
+
+# Check if there is a current operator registered
+current_operator = memory.get('current_operator')
+if not current_operator:
+    # If there is no operator registered, register a new one
+    operator = {'name': 'John Doe', 'email': 'johndoe@example.com'}
+    response = requests.post('https://api.interactions.ics.unisg.ch/cherrybot/operator', json=operator)
+    if response.status_code == 200:
+        # Update the current_operator value in the memory.json file
+        token = response.headers.get('location').split('/')[-1]
+        memory['current_operator'] = {'name': operator['name'], 'email': operator['email'], 'token': token}
+    else:
+        print('Error registering operator:', response.status_code)
+else:
+    # If there is a current operator, move the robot and/or change the gripper position
+    headers = {'Authentication': current_operator['token']}
+    
+    # Move the robot to a new target position
+    target = {'coordinate': {'x': 300, 'y': 0, 'z': 400}, 'rotation': {'roll': 180, 'pitch': 0, 'yaw': 0}}
+    movement = {'target': target, 'speed': 50}
+    response = requests.put('https://api.interactions.ics.unisg.ch/cherrybot/tcp/target', json=movement, headers=headers)
+    if response.status_code == 200:
+        print('Robot is moving to the new target position')
+    else:
+        print('Error moving robot:', response.status_code)
+        
+    # Change the gripper position
+    gripper_position = 20
+    response = requests.put('https://api.interactions.ics.unisg.ch/cherrybot/gripper', json=gripper_position, headers=headers)
+    if response.status_code == 200:
+        print('Gripper position changed to', gripper_position)
+    else:
+        print('Error changing gripper position:', response.status_code)
+    
+    # Update the memory.json file with any changes
+    with open('memory.json', 'w') as f:
+        json.dump(memory, f)
+
+[13:41:05]  Memory: {'current_operator': 'Jan Albert'}
+[13:41:28]  Code: 
+import requests
+
+# define the endpoint URL
+url = "https://api.interactions.ics.unisg.ch/cherrybot/tcp/target"
+
+# set the request header with the authentication token
+headers = {"Authentication": "your_token_here"}
+
+# define the payload with the coordinates and rotation of the target
+payload = {
+    "target": {
+        "coordinate": {
+            "x": 300,
+            "y": 0,
+            "z": 400
+        },
+        "rotation": {
+            "roll": 180,
+            "pitch": 0,
+            "yaw": 0
+        }
+    },
+    "speed": 50
+}
+
+# send the HTTP PUT request to the endpoint
+response = requests.put(url, headers=headers, json=payload)
+
+# print the response status code and content
+print(response.status_code)
+print(response.content)
+
+import json
+
+# load the current memory file
+with open('memory.json') as f:
+    data = json.load(f)
+
+# update the value of 'current_operator' with the new operator name
+data['current_operator'] = 'Jan Albert'
+
+# write the updated memory file back to disk
+with open('memory.json', 'w') as f:
+    json.dump(data, f)
+
+[13:41:39]  LOC: {'requests': <module 'requests' from 'C:\\Users\\JLemee\\Anaconda3\\lib\\site-packages\\requests\\__init__.py'>, 'url': 'https://api.interactions.ics.unisg.ch/cherrybot/tcp/target', 'headers': {'Authentication': 'your_token_here'}, 'payload': {'target': {'coordinate': {'x': 300, 'y': 0, 'z': 400}, 'rotation': {'roll': 180, 'pitch': 0, 'yaw': 0}}, 'speed': 50}, 'response': <Response [401]>, 'json': <module 'json' from 'C:\\Users\\JLemee\\Anaconda3\\lib\\json\\__init__.py'>, 'f': <_io.TextIOWrapper name='memory.json' mode='w' encoding='cp1252'>, 'data': {'current_operator': 'Jan Albert'}}
+[13:41:39]  401
+[13:41:39]  Memory: {'current_operator': 'Jan Albert'}
+[13:41:59]  Code: 
+import requests
+import json
+
+url = "https://api.interactions.ics.unisg.ch/cherrybot/operator"
+
+payload = {
+    "name": "John Doe",
+    "email": "johndoe@example.com"
+}
+headers = {
+    "Content-Type": "application/json"
+}
+
+response = requests.post(url, headers=headers, data=json.dumps(payload))
+
+if response.status_code == 200:
+    token = response.headers["location"].split("/")[-1]
+    print(f"Operator successfully registered with token: {token}")
+elif response.status_code == 403:
+    print("Another operator is currently using the robot")
+else:
+    print("Failed to register operator")
+
+if response.status_code == 200:
+    operator = {"current_operator": payload["name"]}
+else:
+    operator = {"current_operator": ""}
+with open("memory.json", "w") as f:
+    json.dump(operator, f)
+
+memory = {
+    "current_operator": ""
+}
+with open("memory.json", "w") as f:
+    json.dump(memory, f)
+
+[13:42:09]  LOC: {'requests': <module 'requests' from 'C:\\Users\\JLemee\\Anaconda3\\lib\\site-packages\\requests\\__init__.py'>, 'json': <module 'json' from 'C:\\Users\\JLemee\\Anaconda3\\lib\\json\\__init__.py'>, 'url': 'https://api.interactions.ics.unisg.ch/cherrybot/operator', 'payload': {'name': 'John Doe', 'email': 'johndoe@example.com'}, 'headers': {'Content-Type': 'application/json'}, 'response': <Response [200]>, 'token': '0e477ea5c9774a9392a3e49b2c8043f4', 'operator': {'current_operator': 'John Doe'}, 'f': <_io.TextIOWrapper name='memory.json' mode='w' encoding='cp1252'>, 'memory': {'current_operator': ''}}
+[13:42:09]  200
+[13:42:09]  Memory: {'current_operator': ''}
+[13:42:33]  Code: 
+import requests
+import json
+
+# define the base URL for the API
+base_url = 'https://api.interactions.ics.unisg.ch/cherrybot'
+
+# retrieve the current operator from the memory file
+with open('memory.json', 'r') as f:
+    memory = json.load(f)
+current_operator = memory['current_operator']
+
+# create the request headers with the operator token
+headers = {'Authentication': current_operator}
+
+# define the target position and movement speed
+target = {
+    'coordinate': {'x': 300, 'y': 0, 'z': 400},
+    'rotation': {'roll': 180, 'pitch': 0, 'yaw': 0}
+}
+speed = 50
+
+# create the request body
+request_body = {
+    'target': target,
+    'speed': speed
+}
+
+# send the PUT request to move the robot
+response = requests.put(
+    url=f'{base_url}/tcp/target',
+    headers=headers,
+    json=request_body
+)
+
+# check the response status code
+if response.status_code == 200:
+    print('Robot has started moving towards the target position.')
+elif response.status_code == 400:
+    print('Invalid input parameter in the request.')
+elif response.status_code == 401:
+    print('Operator not registered. Register an operator and retrieve the token.')
+elif response.status_code == 403:
+    print('Another operator is currently using the robot.')
+
+[13:42:43]  LOC: {'requests': <module 'requests' from 'C:\\Users\\JLemee\\Anaconda3\\lib\\site-packages\\requests\\__init__.py'>, 'json': <module 'json' from 'C:\\Users\\JLemee\\Anaconda3\\lib\\json\\__init__.py'>, 'base_url': 'https://api.interactions.ics.unisg.ch/cherrybot', 'f': <_io.TextIOWrapper name='memory.json' mode='r' encoding='cp1252'>, 'memory': {'current_operator': ''}, 'current_operator': '', 'headers': {'Authentication': ''}, 'target': {'coordinate': {'x': 300, 'y': 0, 'z': 400}, 'rotation': {'roll': 180, 'pitch': 0, 'yaw': 0}}, 'speed': 50, 'request_body': {'target': {'coordinate': {'x': 300, 'y': 0, 'z': 400}, 'rotation': {'roll': 180, 'pitch': 0, 'yaw': 0}}, 'speed': 50}, 'response': <Response [401]>}
+[13:42:43]  401
+[13:42:43]  Memory: {'current_operator': ''}
+[13:43:01]  Code: 
+import requests
+
+url = 'https://api.interactions.ics.unisg.ch/cherrybot/operator'
+headers = {'Content-Type': 'application/json'}
+data = {'name': 'John Doe', 'email': 'johndoe@example.com'}
+response = requests.post(url, headers=headers, json=data)
+
+if response.status_code == 200:
+    # Operator successfully registered
+    token = response.headers['location'].split('/')[-1]
+    print(f'Operator registered with token: {token}')
+else:
+    # Error occurred
+    print(f'Registering operator failed with status code {response.status_code}: {response.text}')
+
+import json
+
+# Update memory with new operator
+with open('memory.json', 'r') as f:
+    memory = json.load(f)
+memory['current_operator'] = token
+with open('memory.json', 'w') as f:
+    json.dump(memory, f)
+
+[13:57:07]  Memory: {'current_operator': ''}
+[13:57:28]  Code: 
+import json
+import requests
+
+# Set the target coordinates and rotation
+target = {
+    "coordinate": {
+        "x": 300,
+        "y": 0,
+        "z": 400
+    },
+    "rotation": {
+        "pitch": 0,
+        "roll": 180,
+        "yaw": 0
+    }
+}
+
+# Set the speed at which the robot should move
+speed = 50
+
+# Load the current operator from memory
+with open('memory.json') as f:
+    memory = json.load(f)
+current_operator = memory['current_operator']
+
+# Set the API endpoint URL
+url = f'https://api.interactions.ics.unisg.ch/cherrybot/tcp/target'
+
+# Set the headers, including the API key authorization and callback URL
+headers = {
+    'Authentication': current_operator['token'],
+    'X-Callback-URL': 'http://example.com/callback'
+}
+
+# Set the request payload
+payload = {
+    'target': target,
+    'speed': speed
+}
+
+# Make the PUT request
+response = requests.put(url, headers=headers, json=payload)
+
+# Process the response
+if response.status_code == 200:
+    print('Successfully moved the robot')
+else:
+    print(f'Error moving the robot: {response.text}')
+
