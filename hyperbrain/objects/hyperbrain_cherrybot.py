@@ -49,10 +49,10 @@ global_memory = Memory()
 class HyperBrainCherrybot(HyperBrainCommon):
     """
     """
-    def __init__(self, model = "gpt-4", log_policy=0):
+    def __init__(self, model, log_policy, content ="You are a helpful system to give instruction to interact with an API." ):
         """
         """
-        super().__init__(self, model, log_policy, content="You are a helpful system to give instruction to interact with an API." )
+        super().__init__(model, log_policy, content )
         #print("model: ", model)
         self.llm = create_interface(model)
 
@@ -114,7 +114,7 @@ class HyperBrainCherrybot(HyperBrainCommon):
         loc = {}
 
         time.sleep(10)
-        self.logger.print("globals"+ globals(), 0)
+        self.logger.print("globals"+ str(globals()), 0)
 
         exec(code, globals(), loc)
 

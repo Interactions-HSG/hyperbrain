@@ -5,7 +5,7 @@ from hyperbrain.objects.llm_interface_creation import create_interface
 
 class HyperBrainCommon:
 
-    def __init__(self,model = "gpt-4", log_policy=0, content: str = "You are a helpful system to explore a hypermedia environment" ):
+    def __init__(self,model , log_policy, content: str):
         self.logger = Logger(log_policy)
         self.llm = create_interface(model)
         self.content = content

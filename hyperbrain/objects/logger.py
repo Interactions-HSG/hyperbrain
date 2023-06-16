@@ -2,8 +2,9 @@ import datetime
 
 class Logger:
 
-    def __init__(self, policy: int = 0, log_file : str = 'hyperbrain/data/hyperbrain_cherrybot_logs.txt'):
+    def __init__(self, policy: int = 0, log_file : str = 'hyperbrain/data/hyperbrain_logs.txt'):
         self.policy = policy
+        self.log_file = log_file
         #policy = 0 means no log and only error prints.
         #Levels: fatal, error, warn, info, debug, trace
 
