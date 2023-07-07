@@ -16,6 +16,7 @@ from hyperbrain.objects.llm_interface_creation import create_interface
 
 from hyperbrain.objects.hyperbrain_common import HyperBrainCommon
 
+
 API_URL = "https://api.openai.com/v1/chat/completions"  # Get the API URL of a model from ChatGPT
 
 class Memory:
@@ -66,6 +67,7 @@ class HyperBrainCherrybot(HyperBrainCommon):
         self._memory = memory  # Memory of HyperBrain
         self._high_level_goal = str()  # High-level goal
         self.log_policy = log_policy
+
 
     
 

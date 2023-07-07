@@ -26,7 +26,7 @@ class LLMInterface:
         date_log = f"[{current_time}]  {log}\n"  # Append log entry to instance variable
 
         # Append a new line to the log file
-        with open('hyperbrain/data/hyperbrain_logs.txt', 'a') as file:
+        with open('hyperbrain/data/hyperbrain_logs.txt', 'a', encoding="utf-8") as file:
             file.write(f"{date_log}")
 
         return 0

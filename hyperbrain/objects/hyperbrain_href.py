@@ -18,6 +18,8 @@ from hyperbrain.objects.llm_interface_creation import create_interface
 
 from hyperbrain.objects.hyperbrain_common import HyperBrainCommon
 
+from hyperbrain.objects.exit_strategy import ExitStrategy
+
 
 class HyperBrainHref(HyperBrainCommon):
     """
@@ -28,6 +30,10 @@ class HyperBrainHref(HyperBrainCommon):
         """ Constructor
         """
         super().__init__(model, log_policy, content ="You are a helpful system to find the most likely related keyword based on the given list." )
+        self.exit_strategy = ExitStrategy.default()
+
+    def set_exit_strategy(self, exit_strategy):
+        self.exit_strategy = exit_strategy
         
         
  
@@ -144,19 +150,21 @@ class HyperBrainHref(HyperBrainCommon):
                     matches.remove(keyword)
                 else:  # If there is only the high-level goal, start the next loop
                     print("Not found")
-                    continue
+                    matches = titles
+                    #continue
                 self.logger.print("new matches: "+ str(matches),0)
                 answer = matches[0]  # Get the first keyword from the list
 
                 answer = "https://en.wikipedia.org/wiki/" + answer
 
-                if (visited_pages.__contains__(answer)):
-                    self.logger.print("The page has been visited", 0)
-                    title_list = self.create_title_list(titles, visited_pages)
-                    self.logger.print("title list: "+ title_list, 0)
-                    answer = "https://en.wikipedia.org/wiki/" + self.select_random(titles)
+                answer = self.exit_strategy.apply(answer, visited_pages, titles)
 
-                
+                #if (visited_pages.__contains__(answer)):
+                 #   self.logger.print("The page has been visited", 0)
+                  #  title_list = self.create_title_list(titles, visited_pages)
+                   # self.logger.print("title list: "+ title_list, 0)
+                    #answer = "https://en.wikipedia.org/wiki/" + self.select_random(titles)
+
 
                 self.logger.print(f"Answer: {answer}", 0)
 

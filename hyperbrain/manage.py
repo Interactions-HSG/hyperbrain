@@ -14,6 +14,8 @@ from hyperbrain.user_interface import show_ui
 
 from hyperbrain.objects.llm_interface_creation import get_model_list
 
+from hyperbrain.objects.exit_strategy import ExitStrategy
+
 
 def hyperbrain_cherrybot(model: str, log_policy = 0) -> int:
     """ HyperBrain with input
@@ -32,6 +34,7 @@ def hyperbrain_wikipedia(model: str, log_policy = 0) -> str:
     """
 
     model = HyperBrainHref(model, log_policy)  # Initialize HyperBrain
+    model.set_exit_strategy(ExitStrategy.standard())
 
     keyword = input("Enter a keyword: ")  # Initialize high-level goal
     entry_url = input("Enter an entry url: ")  # Initialize the entry point
