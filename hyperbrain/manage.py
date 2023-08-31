@@ -57,6 +57,11 @@ def Run() -> str:
 
     while active:
 
+        print('----------------------')
+        print('     NEW REQUEST      ')
+        print('----------------------')
+
+
         show_ui()  # Show user interface
 
         val_input = input(f"Enter a code to be executed: ")  # User input for the code
