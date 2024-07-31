@@ -12,42 +12,36 @@ from urllib.parse import unquote
 import datetime
 from bs4 import BeautifulSoup
 import re
+import random
+
+from hyperbrain.objects.llm_interface_creation import create_interface
+
+from hyperbrain.objects.hyperbrain_common import HyperBrainCommon
+
+from hyperbrain.objects.exit_strategy import ExitStrategy
 
 
-class HyperBrainHref:
+class HyperBrainHref(HyperBrainCommon):
     """
     This is HyperBrain. It enables Hypermedia Guidance.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, model = "gpt-4", log_policy = 0) -> None:
         """ Constructor
         """
-        # Get the API KEY from a secure .txt file
-        with open('hyperbrain/data/API_KEY.txt', 'r') as f:
-            self.API_KEY = f.read()
-        self.API_URL = "https://api.openai.com/v1/chat/completions"  # API URL from OpenAI
+        super().__init__(model, log_policy, content ="You are a helpful system to find the most likely related keyword based on the given list." )
+        self.exit_strategy = ExitStrategy.default()
+
+    def set_exit_strategy(self, exit_strategy):
+        self.exit_strategy = exit_strategy
+        
+        
  
 
-    @staticmethod
-    def _set_logs(log: str) -> int:
-        """
-        :param log: The log entry to save in the log file.
-        :return: 0
-        """
+    
 
-        now = datetime.datetime.now()  # Get the real time
-        current_time = now.strftime("%H:%M:%S")  # Formatting of the date
-
-        date_log = f"[{current_time}]  {log}\n"  # Append log entry to instance variable
-
-        # Append a new line to the log file
-        with open('hyperbrain/data/hyperbrain_logs.txt', 'a') as file:
-            file.write(f"{date_log}")
-
-        return 0
-
-    @staticmethod
-    def _get_hypermedia_data(url: str) -> list:
+    
+    def _get_hypermedia_data(self, url: str, log_policy = 0) -> list:
         """ GET Request
         This method requests the html/text data of the Hypermedia. It extracts the hypermedia references.
         :param url: URL
@@ -72,58 +66,26 @@ class HyperBrainHref:
         log_entry = f"The context of hypermedia environtment '{url}' " \
                     f"was successfully downloaded and extracted."  # Init a new log entry
 
-        HyperBrainHref._set_logs(log_entry)  # Write a new log entry
+        #HyperBrainHref._set_logs(log_entry, log_policy)  # Write a new log entry
+        self.logger.log(log_entry, log_policy)
 
         return hrefs, titles
 
-    def _ask(self, query, model="gpt-3.5-turbo", temperature=0.9):
+    def _ask(self, query, temperature=0.9):
         """
         :param query: Query is the input for the LLM.
         :param model: Select the LLM model from OpenAI.
         :param temperature: Hyperparameter of the LLM to set the randomness.
         :return: Return the response of the LLM.
         """
-        # Init the headers for the request
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.API_KEY}"
-        }
-
-        # Init the data for the request
-        data = {
-            "model": model,
-            "messages":
-                [
-                    {
-                        "role": "system",
-                        "content": "You are a helpful system to find the most likely related keyword based on the given list."
-                    },
-                    {
-                        "role": "user",
-                        "content": query
-                    }
-                ],
-            "temperature": temperature
-        }
-
-        self._set_logs("Query: " + query)
-
-        response = requests.post(self.API_URL, headers=headers, data=json.dumps(data))  # POST request to the OpenAi API
-
-        print(response)
-        print(response.json())
-
-        exit()
-
-        data = response.json()  # Get the JSON data from the respone
-
-        result = data['choices'][0]['message']['content']  # Init the result of the request
-
-        log_entry = f"The request for the question was executed successfully."  # Init a log entry
-
-        self._set_logs(log_entry)  # Write a log entry
-
+        params = {"content":"You are a helpful system to find the most likely related keyword based on the given list.",
+                  "query": query,
+                  temperature: temperature
+                  }
+        result = self.llm._ask(params)
+        
         return result  # Return result
+        
 
     def hyperbrain(self, keyword: str, entry_point: str) -> str:
         """
@@ -132,11 +94,15 @@ class HyperBrainHref:
         :return: Return the URI of the high-level goal.
         """
 
-        self._set_logs(log=f"{10 * '*'}\nStart HyperBrain for {keyword}")  # Start
+        #self._set_logs(f"{10 * '*'}\nStart HyperBrain for {keyword}", self.log_policy)  # Start
+        self.logger.log(f"{10 * '*'}\nStart HyperBrain for {keyword}",0)
 
-        found = True  # Condition for the while loop
+        potential_pages = set()
+        visited_pages = set()
 
-        while found:  # Search until HyperBrain finds the answer
+        not_found = True  # Condition for the while loop
+
+        while not_found:  # Search until HyperBrain finds the answer
 
             # Query to check if the entry point is the right hypermedia link
 
@@ -145,19 +111,25 @@ class HyperBrainHref:
 
             answer = self._ask(query)  # Get an answer‚
 
-            self._set_logs(log=f"Answer: {answer}")  # Write a log entry
+            #self._set_logs(f"Answer: {answer}", self.log_policy)  # Write a log entry
+            self.logger.log(f"Answer: {answer}",0)
 
             # If True, the final application state is found
             if "TRUE" in answer:
-                found = False
+                not_found = False
 
             else:  # If he does not find the answer, he shows the most related link to the topic
 
-                hrefs, titles = self._get_hypermedia_data(entry_point)  # Get hypermedia context
-
+                hrefs, titles = self._get_hypermedia_data(entry_point, 0)  # Get hypermedia context
+                potential_pages.add(entry_point)
+                for t in titles:
+                    potential_pages.add("https://en.wikipedia.org/wiki/"+ t)
+                visited_pages.add(entry_point)
+                self.logger.print("visited pages: "+str(visited_pages), 0)
                 y = 200  # Number of links
 
-                self._set_logs(log=f"Available Links: {hrefs[:y]}")  # Write a log entry
+                #self._set_logs(f"Available Links: {hrefs[:y]}", self.log_policy)  # Write a log entry
+                self.logger.log(f"Available Links: {hrefs[:y]}",0)
 
                 # Query 2
                 query = f"List of keywords: '{titles[:y]}'. " \
@@ -166,28 +138,65 @@ class HyperBrainHref:
 
                 answer = self._ask(query)  # Ask which link is most related
 
-                self._set_logs(log=f"Answer: {answer}")  # Write a log entry
+                #self._set_logs(f"Answer: {answer}", self.log_policy)  # Write a log entry
+                self.logger.log(f"Answer: {answer}",0)
 
                 # Find all links
+                self.logger.print("answer: " + answer, 0)
                 matches = re.findall(r'(["\'])(.*?)\1', answer)
-                matches = [match[1] for match in matches if match[1]]
-
-                if len(matches) > 1:  # If several keywords were found, delete the high-level goal from the list
+                matches = [self.clean(match[1]) for match in matches if match[1]]
+                self.logger.print("initial matches: " + str(matches), 0)
+                if (len(matches) > 1 and matches.__contains__(keyword)):  # If several keywords were found, delete the high-level goal from the list
                     matches.remove(keyword)
                 else:  # If there is only the high-level goal, start the next loop
                     print("Not found")
-                    continue
-
+                    matches = titles
+                    #continue
+                self.logger.print("new matches: "+ str(matches),0)
                 answer = matches[0]  # Get the first keyword from the list
 
                 answer = "https://en.wikipedia.org/wiki/" + answer
 
-                print(f"Answer: {answer}")
+                answer = self.exit_strategy.apply(answer, visited_pages, titles)
 
-                entry_point = unquote(answer)  # Set the new url as the new local hypermedia environment
+                #if (visited_pages.__contains__(answer)):
+                 #   self.logger.print("The page has been visited", 0)
+                  #  title_list = self.create_title_list(titles, visited_pages)
+                   # self.logger.print("title list: "+ title_list, 0)
+                    #answer = "https://en.wikipedia.org/wiki/" + self.select_random(titles)
+
+
+                self.logger.print(f"Answer: {answer}", 0)
+
+                entry_point = self.format(answer)  # Set the new url as the new local hypermedia environment
 
                 continue
 
-        self._set_logs(f"End HyperBrain \n{10 * '*'}")
+        #self._set_logs(f"End HyperBrain \n{10 * '*'}",self.log_policy)
+        self.logger.log(f"End HyperBrain \n{10 * '*'}",0)
 
         return answer
+    
+    def create_title_list(self, titles: list, visited_pages: set):
+        for v in visited_pages:
+            if (titles.__contains__(v) and  len(titles)>1):
+                titles.remove(v)
+        return titles
+
+    
+    def select_random(self, titles):
+        n = len(titles)
+        i = random.randrange(0, n)
+        return titles[i]
+    
+    def format(self, potential_url: str):
+        url = unquote(potential_url)
+        if (url[-1]== "."):
+            url = url[:-1]
+        return url
+    
+    def clean(self, keyword):
+        if (keyword[-1]=="."):
+            keyword = keyword[:-1]
+        return keyword
+        

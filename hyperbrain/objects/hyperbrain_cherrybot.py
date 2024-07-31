@@ -12,17 +12,50 @@ import datetime
 import re
 import time
 
+from hyperbrain.objects.llm_interface_creation import create_interface
+
+from hyperbrain.objects.hyperbrain_common import HyperBrainCommon
+
+
 API_URL = "https://api.openai.com/v1/chat/completions"  # Get the API URL of a model from ChatGPT
 
+class Memory:
 
-class HyperBrain:
+    def __init__(self, file_name= 'memory.json'):
+        self.file_name = file_name
+        with open(file_name, 'r') as f:
+            self.memory = json.load(f)  # Get memory
+
+    def update_read(self):
+        with open(self.file_name, 'r') as f:
+            self.memory = json.load(f)  # Get memory
+
+    def update_write(self):
+        with open(self.file_name, 'w') as f:
+            json.dump(self.memory, f)
+
+    def put(self, key, value):
+        self.memory[key]=value
+        self.update_write()
+
+    def get(self, key):
+        self.update_read()
+        return self.memory[key]
+    
+global_memory = Memory()
+
+
+
+
+class HyperBrainCherrybot(HyperBrainCommon):
     """
     """
-    def __init__(self):
+    def __init__(self, model, log_policy, content ="You are a helpful system to give instruction to interact with an API." ):
         """
         """
-        with open('hyperbrain/data/API_KEY.txt', 'r') as f:
-            API_KEY = f.read()  # GET API Key
+        super().__init__(model, log_policy, content )
+        #print("model: ", model)
+        self.llm = create_interface(model)
 
         with open('hyperbrain/data/cherrybot_yaml.txt', 'r') as f:
             description_api = f.read()  # GET description of the API
@@ -31,26 +64,12 @@ class HyperBrain:
             memory = json.load(f)  # Get memory
 
         self._description = description_api  # Description of the API
-        self._api_key_chat_gpt = API_KEY  # API key for the LLM
         self._memory = memory  # Memory of HyperBrain
         self._high_level_goal = str()  # High-level goal
+        self.log_policy = log_policy
 
-    @staticmethod
-    def _set_logs(log: str) -> int:
-        """
-        :param log: The log entry to save in the log file.
-        :return: 0
-        """
-        now = datetime.datetime.now()  # Get the real time
-        current_time = now.strftime("%H:%M:%S")  # Formatting of the date
 
-        date_log = f"[{current_time}]  {log}\n"  # Append log entry to instance variable
-
-        # Append a new line to the log file
-        with open('hyperbrain/data/hyperbrain_cherrybot_logs.txt', 'a') as file:
-            file.write(f"{date_log}")
-
-        return 0
+    
 
     @staticmethod
     def _get_python_code(data: str) -> str:
@@ -72,45 +91,6 @@ class HyperBrain:
 
         return code_string
 
-    def _ask(self, query: str, model="gpt-4", temperature=0.9) -> str:
-        """
-        :param query: Query is the input for the LLM.
-        :param model: Select the LLM model from OpenAI.
-        :param temperature: Hyperparameter of the LLM to set the randomness.
-        :return: Return the response of the LLM.
-        """
-        # Init the headers for the request
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self._api_key_chat_gpt}"
-        }
-
-        # Init the data for the request
-        data = {
-            "model": model,
-            "messages":
-                [
-                    {
-                        "role": "system",
-                        "content": "You are a helpful system to give instruction to interact with an API."
-                    },
-                    {
-                        "role": "user",
-                        "content": query
-                    }
-                ],
-            "temperature": temperature
-        }
-
-        time.sleep(3)
-        response = requests.post(API_URL, headers=headers, data=json.dumps(data))  # POST request to the OpenAi API
-
-        data = response.json()  # Get the JSON data from the response
-
-        result = data['choices'][0]['message']['content']  # Init the result of the request
-
-        return result  # Return result
-
     def _thinking(self, action: str) -> int:
         """
         :param action: Instructions to interact with the robotic arm.
@@ -122,25 +102,31 @@ class HyperBrain:
                 f"Process the JSON file 'memory.json' with the results from the interaction." \
 
 
-        self._set_logs(f"Memory: {self._memory}")
+        #self._set_logs(f"Memory: {self._memory}", self.log_policy)
+        self.logger.log(f"Memory: {self._memory}",0)
 
         answer = self._ask(query)
 
         code = self._get_python_code(answer)
 
-        self._set_logs(f"Code: {code}")
+        #self._set_logs(f"Code: {code}", self.log_policy)
+        self.logger.log(f"Code: {code}",0)
+        self.logger.print("code: "+ code, 0)
 
         loc = {}
 
         time.sleep(10)
+        self.logger.print("globals"+ str(globals()), 0)
 
         exec(code, globals(), loc)
 
-        self._set_logs(f"LOC: {loc}")
+        #self._set_logs(f"LOC: {loc}", self.log_policy)
+        self.logger.log(f"LOC: {loc}", 0)
 
         status_code = loc['response'].status_code
 
-        self._set_logs(status_code)
+        #self._set_logs(status_code, self.log_policy)
+        self.logger.log(status_code, 0)
 
         with open('memory.json', 'r') as f:
             memory = json.load(f)  # Get memory

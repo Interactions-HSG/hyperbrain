@@ -1,9 +1,15 @@
 .idea/
+__pycache__/
+*.py[cod]
 archiv/
 /archiv/paper/
 /app_data_grabber/__pycache__/
-/hyperbrain/__pychache__/
+/hyperbrain/__pychache__/*
+hyperbrain/objects/__pycache__/*
 Untitled API Document.paw
 /hyperbrain/data/API_KEY.txt
 .DS_Store
 hyperbrain/__pycache__
+
+API_KEY.txt
+hyperbrain_logs.txt
